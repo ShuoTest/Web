@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单 · 黑色 · TEST</title>
+    <style>
+        /* 全局重置，确保没有任何边距干扰视觉 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 全屏黑色背景，高度占满视口，弹性布局让文字居中 */
+        body {
+            background-color: #000000;      /* 纯黑背景 */
+            min-height: 100vh;              /* 至少占满视口高度 */
+            display: flex;                  /* flex 居中 */
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial Black', 'Impact', 'Helvetica Neue', sans-serif; /* 粗体感强的字体栈 */
+            /* 防止任何意外的滚动或边距 */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;               /* 防止小屏幕出现滚动条，让 TEST 完全居中 */
+        }
+
+        /* 核心大字：加粗、巨大、纯白，带一点微妙的阴影增加视觉冲击 */
+        .test-title {
+            font-size: 20rem;               /* 超大尺寸，灵活适应屏幕 */
+            font-weight: 900;              /* 最大字重，加粗加黑 */
+            color: #ffffff;                /* 纯白，与黑底形成强烈对比 */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* 轻微发光，更醒目 */
+            letter-spacing: 0.02em;         /* 略微字间距，更清晰 */
+            line-height: 1.2;               /* 行高紧凑，保持居中感 */
+            user-select: none;              /* 防止选中，更干净 */
+            text-align: center;
+            /* 保证在任何屏幕下都足够大，但又不会溢出（配合 overflow:hidden） */
+            max-width: 100vw;
+            word-break: break-word;         /* 极端小屏下避免溢出（虽然几乎不可能） */
+        }
+
+        /* 针对小屏幕做响应式调整，但依然保持巨大 */
+        @media (max-width: 768px) {
+            .test-title {
+                font-size: 12rem;           /* 平板/手机依然醒目 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .test-title {
+                font-size: 8rem;            /* 小屏手机也能显示完整 TEST */
+            }
+        }
+
+        /* 极窄屏幕或极端分辨率下进一步缩小，保证单词完整 */
+        @media (max-width: 360px) {
+            .test-title {
+                font-size: 5.5rem;
+            }
+        }
+
+        /* 针对大屏4K及以上，可以更大，但20rem已经足够，用vw单位可以更灵活，但rem更可控 */
+        /* 额外细节：如果屏幕特别宽，让文字依然保持视觉中心 */
+    </style>
+</head>
+<body>
+    <!-- 只包含一个核心元素：加粗加大的 TEST -->
+    <div class="test-title">TEST</div>
+</body>
+</html>
