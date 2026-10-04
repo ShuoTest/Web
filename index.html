@@ -1,72 +1,1269 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>简单 · 黑色 · TEST</title>
-    <style>
-        /* 全局重置，确保没有任何边距干扰视觉 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Personal Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000;
+    --soft-white:#f2f2f0;
+    --white:#ffffff;
+    --iron:#6b6b6e;
+    --iron-light:#9a9a9d;
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+    --font-mono:'JetBrains Mono','SF Mono',monospace;
+    --font-display:'Noto Serif SC','Inter',serif;
+    --ease:cubic-bezier(.19,1,.22,1);
+  }
 
-        /* 全屏黑色背景，高度占满视口，弹性布局让文字居中 */
-        body {
-            background-color: #000000;      /* 纯黑背景 */
-            min-height: 100vh;              /* 至少占满视口高度 */
-            display: flex;                  /* flex 居中 */
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial Black', 'Impact', 'Helvetica Neue', sans-serif; /* 粗体感强的字体栈 */
-            /* 防止任何意外的滚动或边距 */
-            margin: 0;
-            padding: 0;
-            overflow: hidden;               /* 防止小屏幕出现滚动条，让 TEST 完全居中 */
-        }
+  *{ margin:0; padding:0; box-sizing:border-box; }
 
-        /* 核心大字：加粗、巨大、纯白，带一点微妙的阴影增加视觉冲击 */
-        .test-title {
-            font-size: 20rem;               /* 超大尺寸，灵活适应屏幕 */
-            font-weight: 900;              /* 最大字重，加粗加黑 */
-            color: #ffffff;                /* 纯白，与黑底形成强烈对比 */
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* 轻微发光，更醒目 */
-            letter-spacing: 0.02em;         /* 略微字间距，更清晰 */
-            line-height: 1.2;               /* 行高紧凑，保持居中感 */
-            user-select: none;              /* 防止选中，更干净 */
-            text-align: center;
-            /* 保证在任何屏幕下都足够大，但又不会溢出（配合 overflow:hidden） */
-            max-width: 100vw;
-            word-break: break-word;         /* 极端小屏下避免溢出（虽然几乎不可能） */
-        }
+  html,body{ height:100%; }
 
-        /* 针对小屏幕做响应式调整，但依然保持巨大 */
-        @media (max-width: 768px) {
-            .test-title {
-                font-size: 12rem;           /* 平板/手机依然醒目 */
-            }
-        }
+  body{
+    background:var(--black);
+    color:var(--soft-white);
+    font-family:var(--font-sans);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+  }
 
-        @media (max-width: 480px) {
-            .test-title {
-                font-size: 8rem;            /* 小屏手机也能显示完整 TEST */
-            }
-        }
+  ::selection{ background:rgba(255,255,255,.18); color:#fff; }
 
-        /* 极窄屏幕或极端分辨率下进一步缩小，保证单词完整 */
-        @media (max-width: 360px) {
-            .test-title {
-                font-size: 5.5rem;
-            }
-        }
+  /* ============ 环境光 ============ */
+  .bg{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .orb{ position:absolute; border-radius:50%; filter:blur(90px); will-change:transform; }
+  .orb-1{
+    width:56vmax; height:56vmax; left:50%; top:-24vmax; margin-left:-28vmax;
+    background:radial-gradient(circle, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 68%);
+    animation:drift1 28s ease-in-out infinite alternate;
+  }
+  .orb-2{
+    width:46vmax; height:46vmax; left:-16vmax; bottom:-20vmax;
+    background:radial-gradient(circle, rgba(176,198,255,.20) 0%, rgba(176,198,255,0) 68%);
+    animation:drift2 36s ease-in-out infinite alternate;
+  }
+  .orb-3{
+    width:40vmax; height:40vmax; right:-14vmax; top:24%;
+    background:radial-gradient(circle, rgba(255,232,214,.14) 0%, rgba(255,232,214,0) 68%);
+    animation:drift3 32s ease-in-out infinite alternate;
+  }
+  @keyframes drift1{ from{ transform:translate3d(-4%,0,0) scale(1);} to{ transform:translate3d(6%,5%,0) scale(1.12);} }
+  @keyframes drift2{ from{ transform:translate3d(0,0,0) scale(1.05);} to{ transform:translate3d(9%,-7%,0) scale(1);} }
+  @keyframes drift3{ from{ transform:translate3d(0,3%,0) scale(1);} to{ transform:translate3d(-8%,-5%,0) scale(1.15);} }
 
-        /* 针对大屏4K及以上，可以更大，但20rem已经足够，用vw单位可以更灵活，但rem更可控 */
-        /* 额外细节：如果屏幕特别宽，让文字依然保持视觉中心 */
-    </style>
+  .bg::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 72% 62% at 50% 46%, rgba(0,0,0,0) 18%, rgba(0,0,0,.78) 100%);
+  }
+
+  .grain{
+    position:fixed; inset:-100px; z-index:1; pointer-events:none; opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grainShift 8s steps(4) infinite;
+  }
+  @keyframes grainShift{
+    0%{ transform:translate(0,0);} 25%{ transform:translate(-18px,12px);}
+    50%{ transform:translate(14px,-16px);} 75%{ transform:translate(-10px,-8px);}
+    100%{ transform:translate(0,0);}
+  }
+
+  /* ============ 光标辉光 ============ */
+  #cursor-glow{
+    position:fixed; top:0; left:0;
+    width:520px; height:520px; margin-left:-260px; margin-top:-260px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.11) 0%, rgba(255,255,255,.045) 34%, transparent 70%);
+    pointer-events:none; z-index:1;
+    transform:translate3d(-1200px,-1200px,0);
+    transition:opacity .5s ease;
+    will-change:transform; mix-blend-mode:screen;
+  }
+
+  /* ============ 顶栏 ============ */
+  header{
+    position:fixed; top:0; left:0; right:0;
+    z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px clamp(22px, 5vw, 64px);
+    pointer-events:none;
+    transition:opacity .8s var(--ease), filter .8s var(--ease), transform .8s var(--ease);
+  }
+  header > *{ pointer-events:auto; }
+
+  .logo{
+    font-family:var(--font-mono);
+    font-size:1.25rem; font-weight:500; letter-spacing:.02em;
+    color:var(--white); user-select:none; line-height:1;
+  }
+  .logo span{ color:var(--iron-light); }
+
+  .login-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:11px 20px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.11);
+    background:linear-gradient(168deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    color:rgba(255,255,255,.80);
+    font-family:var(--font-mono);
+    font-size:.82rem; font-weight:400; letter-spacing:.16em;
+    cursor:pointer;
+    transition:
+      color .45s ease,
+      border-color .45s ease,
+      background .45s ease,
+      box-shadow .45s ease,
+      transform .45s var(--ease),
+      opacity .55s ease;
+  }
+  .login-btn:hover{
+    color:var(--white);
+    border-color:rgba(255,255,255,.30);
+    background:linear-gradient(168deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.28),
+      0 0 30px -8px rgba(255,255,255,.30);
+    transform:translateY(-1px);
+  }
+  .login-btn:active{ transform:translateY(0) scale(.97); }
+  .login-btn svg{
+    width:15px; height:15px; display:block;
+    transition:transform .45s var(--ease);
+  }
+  .login-btn:hover svg{ transform:translateX(3.5px); }
+
+  body.login-mode .login-btn{
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(-6px);
+  }
+
+  /* ============ 底栏 ============ */
+  footer{
+    position:fixed; bottom:0; left:0; right:0;
+    z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    padding:22px clamp(22px, 5vw, 64px);
+    pointer-events:none;
+    transition:opacity .8s var(--ease), filter .8s var(--ease), transform .8s var(--ease);
+  }
+  .footer-copy{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    color:rgba(255,255,255,.26);
+    letter-spacing:.05em;
+    user-select:none;
+  }
+
+  body.content-mode header,
+  body.content-mode footer{
+    opacity:0;
+    filter:blur(10px);
+    transform:translateY(-8px);
+    pointer-events:none;
+  }
+  body.content-mode footer{ transform:translateY(8px); }
+
+  /* ============ 舞台 ============ */
+  .stage{
+    position:fixed; inset:0; z-index:2;
+    display:grid; grid-template-columns:1fr; grid-template-rows:1fr;
+    perspective:1400px;
+  }
+  .stage > *{ grid-area:1 / 1; }
+
+  /* ============ 屏幕通用 ============ */
+  .screen{
+    align-self:stretch;
+    justify-self:stretch;
+    display:flex; align-items:center; justify-content:center;
+    padding:96px 22px 92px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    filter:blur(18px);
+    transform:translateY(24px) scale(.985);
+    transition:
+      opacity .9s var(--ease),
+      filter .9s var(--ease),
+      transform .95s var(--ease),
+      visibility 0s linear .95s;
+    will-change:opacity, filter, transform;
+  }
+  .screen.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    filter:blur(0);
+    transform:translateY(0) scale(1);
+    transition:
+      opacity .9s var(--ease),
+      filter .9s var(--ease),
+      transform .95s var(--ease),
+      visibility 0s linear 0s;
+  }
+
+  /* ============ 主界面 ============ */
+  .home-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    width:100%;
+    max-width:1400px;
+    overflow:visible;
+  }
+
+  .hero-eyebrow{
+    font-family:var(--font-mono);
+    font-size:clamp(.68rem, 1.5vw, .86rem);
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--iron-light);
+    margin-bottom:clamp(22px, 4vh, 34px);
+    padding-left:.42em;
+    opacity:0;
+    animation:fadeUp 1.4s var(--ease) .3s forwards;
+  }
+
+  .hero-name{
+    font-family:'Noto Serif SC', 'Inter', serif;
+    font-size:clamp(2rem, 7.6vw, 5.8rem);
+    font-weight:900;
+    font-style:italic;
+    line-height:1.06;
+    letter-spacing:-.022em;
+    color:var(--white);
+    background:linear-gradient(180deg, #ffffff 0%, #c9c9c9 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    cursor:default;
+    white-space:nowrap;
+    display:inline-block;
+    /* 加大右内边距，避免背景裁剪切掉最后一个字符的右边缘 */
+    padding-right:.18em;
+    transform-origin:center center;
+    will-change:transform;
+    overflow:visible;
+    opacity:0;
+    animation:fadeUp 1.5s var(--ease) .45s forwards;
+  }
+
+  .hero-titles{
+    margin-top:clamp(26px, 4.8vh, 44px);
+    height:2.4rem;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono);
+    font-size:clamp(.96rem, 2.2vw, 1.34rem);
+    color:var(--iron-light);
+    letter-spacing:.08em;
+    opacity:0;
+    animation:fadeUp 1.4s var(--ease) .85s forwards;
+  }
+  .hero-titles .cursor-blink{
+    display:inline-block;
+    width:1px; height:1.1em;
+    background:var(--iron-light);
+    margin-left:5px;
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  @keyframes fadeUp{
+    from{ opacity:0; filter:blur(14px); transform:translateY(18px); }
+    to{   opacity:1; filter:blur(0);    transform:translateY(0); }
+  }
+
+  .screen-home.zooming .hero-name{
+    animation:heroZoom 0.7s var(--ease) forwards;
+  }
+  @keyframes heroZoom{
+    from{ transform:scale(1); }
+    to{   transform:scale(1.55); }
+  }
+  .screen-home.zooming .hero-eyebrow,
+  .screen-home.zooming .hero-titles{
+    animation:homeFadeBlur .55s var(--ease) forwards;
+  }
+  @keyframes homeFadeBlur{
+    from{ opacity:1; filter:blur(0); transform:translateY(0); }
+    to{   opacity:0; filter:blur(16px); transform:translateY(-8px); }
+  }
+
+  /* ============ 登录界面 ============ */
+  .login-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+    max-width:420px;
+  }
+
+  .login-title{
+    font-family:'Noto Serif SC', 'Inter', serif;
+    font-size:clamp(1.8rem, 6.8vw, 3.6rem);
+    font-weight:800;
+    font-style:italic;
+    letter-spacing:-.014em;
+    line-height:1.2;
+    color:var(--white);
+    background:linear-gradient(180deg, #ffffff 0%, #c9c9c9 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    white-space:nowrap;
+    margin-bottom:clamp(34px, 6.4vh, 56px);
+    padding-right:.14em;
+    transform-origin:center center;
+    will-change:opacity, filter, transform;
+    opacity:0;
+    filter:blur(10px);
+    transform:scale(1.55) translateY(-22px);
+  }
+
+  /* ============ 输入框区域 ============ */
+  .field-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    transition:
+      opacity .5s var(--ease),
+      filter .5s var(--ease),
+      transform .55s var(--ease);
+    will-change:opacity, filter, transform;
+  }
+
+  .screen-login.dissolving .field-wrap{
+    opacity:0;
+    filter:blur(10px);
+    transform:translateY(-8px);
+  }
+
+  .glass{
+    --sh:
+      inset 0 1px 0 rgba(255,255,255,.20),
+      inset 0 -1px 0 rgba(255,255,255,.045),
+      inset 0 16px 34px -20px rgba(255,255,255,.24),
+      0 32px 74px -26px rgba(0,0,0,.96),
+      0 0 0 1px rgba(255,255,255,.02);
+    position:relative;
+    display:flex; align-items:center; gap:8px;
+    width:min(368px, 80vw);
+    padding:9px 9px 9px 20px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.09);
+    background:linear-gradient(168deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.028) 42%, rgba(255,255,255,.055) 100%);
+    backdrop-filter:blur(26px) saturate(175%) brightness(1.06);
+    -webkit-backdrop-filter:blur(26px) saturate(175%) brightness(1.06);
+    box-shadow:var(--sh);
+    transition:box-shadow .55s ease, border-color .55s ease, background .55s ease;
+    overflow:hidden;
+  }
+  .glass:nth-child(1){ animation:fieldIn 1.05s var(--ease) .42s both; }
+  .glass:nth-child(2){ animation:fieldIn 1.05s var(--ease) .54s both; }
+
+  @keyframes fieldIn{
+    from{ opacity:0; filter:blur(16px); transform:translateY(16px) scale(.965); }
+    to{   opacity:1; filter:blur(0);    transform:translateY(0)     scale(1); }
+  }
+
+  .glass::before{
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background:linear-gradient(148deg,
+      rgba(255,255,255,.70) 0%, rgba(255,255,255,.07) 20%, rgba(255,255,255,0) 44%,
+      rgba(255,255,255,0) 60%, rgba(255,255,255,.30) 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite:exclude;
+    pointer-events:none; opacity:.92;
+  }
+  .glass::after{
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.13) 46%, rgba(255,255,255,.02) 54%, transparent 66%);
+    background-size:220% 100%; background-position:150% 0;
+    animation:sheen 7.5s cubic-bezier(.6,0,.4,1) infinite;
+    pointer-events:none; mix-blend-mode:screen;
+  }
+  @keyframes sheen{ 0%,55%{ background-position:150% 0; } 100%{ background-position:-60% 0; } }
+
+  .glass:focus-within{
+    --sh:
+      inset 0 1px 0 rgba(255,255,255,.30),
+      inset 0 -1px 0 rgba(255,255,255,.08),
+      inset 0 16px 34px -20px rgba(255,255,255,.32),
+      0 32px 74px -26px rgba(0,0,0,.96),
+      0 0 54px -10px rgba(255,255,255,.24);
+    border-color:rgba(255,255,255,.26);
+  }
+
+  .lock{
+    flex:0 0 auto; display:grid; place-items:center;
+    width:22px; height:22px;
+    color:rgba(255,255,255,.46);
+    transition:color .45s ease, transform .45s var(--ease);
+  }
+  .lock svg{ width:17px; height:17px; display:block; }
+  .glass:focus-within .lock{ color:rgba(255,255,255,.92); transform:scale(1.06); }
+
+  .pw-input{
+    flex:1 1 auto; min-width:0;
+    padding:19px 4px; border:0; outline:none; background:transparent;
+    color:#ffffff;
+    font-family:var(--font-mono);
+    font-size:15px; font-weight:400; letter-spacing:.14em;
+    caret-color:#fff;
+  }
+  .pw-input.is-user{ letter-spacing:.08em; }
+
+  .pw-input::placeholder{
+    font-family:var(--font-mono);
+    font-size:13px; font-weight:400; letter-spacing:.12em;
+    color:rgba(255,255,255,.36);
+    transition:color .4s ease, opacity .4s ease;
+  }
+  .glass:focus-within .pw-input::placeholder{ color:rgba(255,255,255,.22); }
+
+  .submit{
+    position:relative; flex:0 0 auto;
+    width:54px; height:54px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.14);
+    background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.055));
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.30),
+      inset 0 -6px 14px -8px rgba(255,255,255,.16),
+      0 10px 22px -12px rgba(0,0,0,.95);
+    color:var(--white); display:grid; place-items:center; cursor:pointer;
+    transition:transform .45s var(--ease), box-shadow .45s ease, background .45s ease, border-color .45s ease;
+  }
+  .submit svg{ width:18px; height:18px; display:block; transition:transform .45s var(--ease), opacity .25s ease; }
+  .submit:hover{
+    background:linear-gradient(180deg, rgba(255,255,255,.27), rgba(255,255,255,.10));
+    border-color:rgba(255,255,255,.30);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.45),
+      inset 0 -6px 14px -8px rgba(255,255,255,.24),
+      0 0 30px -4px rgba(255,255,255,.40),
+      0 10px 22px -12px rgba(0,0,0,.95);
+  }
+  .submit:hover svg{ transform:translateX(2.5px); }
+  .submit:active{ transform:scale(.92); }
+
+  .submit.loading{ pointer-events:none; }
+  .submit.loading svg{ opacity:0; }
+  .submit.loading::after{
+    content:''; position:absolute; inset:-1px; border-radius:50%;
+    border:1.5px solid transparent;
+    border-top-color:rgba(255,255,255,.92);
+    border-right-color:rgba(255,255,255,.28);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .glass.error{
+    border-color:rgba(255,96,96,.42);
+    --sh:
+      inset 0 1px 0 rgba(255,255,255,.16),
+      inset 0 -1px 0 rgba(255,255,255,.04),
+      inset 0 16px 34px -20px rgba(255,110,110,.22),
+      0 32px 74px -26px rgba(0,0,0,.96),
+      0 0 46px -12px rgba(255,70,70,.38);
+    animation:shake .52s cubic-bezier(.36,.07,.19,.97) both;
+  }
+  @keyframes shake{
+    10%,90%{ transform:translateX(-2px);} 20%,80%{ transform:translateX(4px);}
+    30%,50%,70%{ transform:translateX(-7px);} 40%,60%{ transform:translateX(7px);}
+  }
+
+  .msg{
+    height:20px;
+    margin-top:18px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono);
+    font-size:11.5px; font-weight:400; letter-spacing:.1em;
+    color:rgba(255,120,120,.92);
+    opacity:0; white-space:nowrap; pointer-events:none;
+    transition:opacity .45s ease;
+    text-shadow:0 0 22px rgba(255,80,80,.35);
+  }
+  .msg.show{ opacity:1; }
+
+  .glass.granted{
+    pointer-events:none;
+    animation:granted .9s var(--ease) forwards;
+  }
+  @keyframes granted{
+    0%{   transform:scale(1);    filter:brightness(1);   opacity:1; }
+    28%{  transform:scale(1.035);filter:brightness(2.3); }
+    100%{ transform:scale(.94);  filter:brightness(1.7); opacity:0; }
+  }
+
+  /* ============ 对号 ============ */
+  .check{
+    position:relative;
+    align-self:center;
+    justify-self:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .5s ease;
+  }
+  .check.show{ opacity:1; }
+
+  .check svg{ width:86px; height:86px; display:block; overflow:visible; }
+  .check .ring{
+    fill:none; stroke:rgba(255,255,255,.20); stroke-width:1;
+    transform-origin:50% 50%; transform:scale(.86);
+    transition:transform .9s var(--ease), stroke .9s ease;
+  }
+  .check.show .ring{ transform:scale(1); stroke:rgba(255,255,255,.30); }
+  .check .tick{
+    fill:none; stroke:#fff; stroke-width:2.2;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:40; stroke-dashoffset:40;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.55));
+  }
+  .check.show .tick{ animation:draw .75s .16s var(--ease) forwards; }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .check::before{
+    content:''; position:absolute; inset:-52px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.20) 0%, transparent 70%);
+    opacity:0;
+  }
+  .check.show::before{ animation:bloom 1.4s ease-out forwards; }
+  @keyframes bloom{
+    0%{   opacity:0; transform:scale(.6); }
+    35%{  opacity:1; transform:scale(1); }
+    100%{ opacity:0; transform:scale(1.45); }
+  }
+
+  .check.out{
+    opacity:0;
+    transform:scale(1.32);
+    filter:blur(8px);
+    transition:opacity .55s ease, transform .65s var(--ease), filter .65s var(--ease);
+  }
+  .check.out::before{ opacity:0 !important; }
+
+  /* ============ 内容区域 ============ */
+  .content{
+    align-self:stretch;
+    justify-self:stretch;
+    z-index:3;
+    width:100%;
+    height:100%;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    opacity:0;
+    filter:blur(14px);
+    transform:translateY(22px);
+    pointer-events:none;
+    transition:opacity .95s var(--ease), filter .95s var(--ease), transform 1.05s var(--ease);
+    transition-delay:.05s;
+    will-change:opacity, filter, transform;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:
+      clamp(64px, 11vh, 130px)
+      clamp(28px, 6vw, 110px)
+      clamp(64px, 11vh, 130px)
+      clamp(28px, 6vw, 110px);
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.12) transparent;
+  }
+  .content.show{
+    opacity:1;
+    filter:blur(0);
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+  .content::-webkit-scrollbar{ width:4px; }
+  .content::-webkit-scrollbar-track{ background:transparent; }
+  .content::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,.10);
+    border-radius:2px;
+  }
+  .content::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.22); }
+
+  .doc{
+    width:100%;
+    margin:0;
+    padding:0;
+    background:none;
+    border:none;
+    box-shadow:none;
+    backdrop-filter:none;
+  }
+
+  .doc .line{
+    font-family:var(--font-display);
+    font-size:clamp(1.1rem, 1.7vw, 1.4rem);
+    font-weight:300;
+    line-height:2.0;
+    letter-spacing:.045em;
+    color:rgba(242,242,240,.90);
+    white-space:pre-wrap;
+    min-height:2.0em;
+    opacity:0;
+    transform:translateY(12px);
+    filter:blur(5px);
+    transition:opacity .85s var(--ease), transform .85s var(--ease), filter .85s var(--ease);
+    transition-delay:var(--d, 0s);
+    will-change:opacity, transform, filter;
+  }
+  .content.show .doc .line{
+    opacity:1;
+    transform:translateY(0);
+    filter:blur(0);
+  }
+  .doc .line.blank{ height:2.0em; }
+
+  /* 系统提示（非用户内容）沿用等宽字体，与版权说明一致 */
+  .doc .line.fallback{
+    font-family:var(--font-mono);
+    font-size:1rem;
+    letter-spacing:.1em;
+  }
+
+  /* ============ 响应式 ============ */
+  @media (max-width:640px){
+    header{ padding:20px 22px; }
+    .login-btn{ padding:10px 16px; font-size:.76rem; letter-spacing:.14em; gap:8px; }
+    .glass{ padding:8px 8px 8px 16px; }
+    .submit{ width:50px; height:50px; }
+    .pw-input{ padding:17px 2px; letter-spacing:.12em; }
+    .pw-input.is-user{ letter-spacing:.06em; }
+    .check svg{ width:72px; height:72px; }
+    .screen{ padding:84px 22px 80px; }
+    .content{
+      padding:
+        clamp(64px, 10vh, 100px)
+        22px
+        clamp(64px, 10vh, 100px)
+        22px;
+    }
+    .doc .line{ font-size:clamp(1.05rem, 4.2vw, 1.25rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+    .glass{ opacity:1; filter:none; transform:none; }
+    .content{ opacity:1; filter:none; transform:none; }
+    .doc .line{ opacity:1; filter:none; transform:none; }
+    .hero-eyebrow, .hero-name, .hero-titles{ opacity:1; filter:none; transform:none; }
+  }
+</style>
 </head>
 <body>
-    <!-- 只包含一个核心元素：加粗加大的 TEST -->
-    <div class="test-title">TEST</div>
+
+<div class="bg" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+<div class="grain" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
+
+<header>
+  <div class="logo">/<span>_</span></div>
+  <button class="login-btn" id="login-btn" type="button">
+    <span>Login</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h13"/>
+      <path d="M12.6 6.6 19 12l-6.4 5.4"/>
+    </svg>
+  </button>
+</header>
+
+<footer>
+  <div class="footer-copy">Copyright © 2026 Shuo. All rights reserved.</div>
+</footer>
+
+<main class="stage">
+
+  <section class="screen active" id="screen-home">
+    <div class="home-inner">
+      <div class="hero-eyebrow">WELCOME</div>
+      <h1 class="hero-name" id="glitch-name" data-text="Personal Database">Personal Database</h1>
+      <div class="hero-titles">
+        <span id="typing-title"></span><span class="cursor-blink"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-login">
+    <div class="login-inner">
+      <h2 class="login-title" id="login-title">Personal Database</h2>
+
+      <form class="field-wrap" id="tilt" autocomplete="off" novalidate>
+
+        <div class="glass" id="glass-user">
+          <span class="lock" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="3.5"/>
+              <path d="M5 20c0-3.5 3.2-6 7-6s7 2.5 7 6"/>
+            </svg>
+          </span>
+          <input
+            class="pw-input is-user"
+            id="username"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="Username"
+            aria-label="Username">
+        </div>
+
+        <div class="glass" id="glass">
+          <span class="lock" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="10.4" width="16" height="10.6" rx="3.2"/>
+              <path d="M8 10.4V7.2a4 4 0 0 1 8 0v3.2"/>
+              <circle cx="12" cy="15.9" r="1.05" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <input
+            class="pw-input"
+            id="pw"
+            type="password"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="Password"
+            aria-label="Password">
+          <button class="submit" id="btn" type="submit" aria-label="Verify">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h13"/>
+              <path d="M12.6 6.6 19 12l-6.4 5.4"/>
+            </svg>
+          </button>
+        </div>
+
+      </form>
+
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="check" id="check" aria-hidden="true">
+    <svg viewBox="0 0 52 52">
+      <circle class="ring" cx="26" cy="26" r="24.5"/>
+      <path class="tick" d="M15 27l7.5 7.5L37 19"/>
+    </svg>
+  </div>
+
+  <section class="content" id="content" aria-hidden="true">
+    <article class="doc" id="doc"></article>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  /* =========================================================
+     1. SHA-256（单文件实现）
+     ========================================================= */
+  var K = [
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  var H0 = [
+    0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
+    0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19
+  ];
+
+  function toUtf8Bytes(str){
+    var out = [];
+    for (var i = 0; i < str.length; i++){
+      var c = str.charCodeAt(i);
+      if (c < 0x80){ out.push(c); }
+      else if (c < 0x800){ out.push(0xc0 | (c >> 6), 0x80 | (c & 0x3f)); }
+      else if (c < 0xd800 || c >= 0xe000){
+        out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 0x3f), 0x80 | (c & 0x3f));
+      } else {
+        i++;
+        var cp = 0x10000 + (((c & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+        out.push(
+          0xf0 | (cp >> 18),
+          0x80 | ((cp >> 12) & 0x3f),
+          0x80 | ((cp >> 6) & 0x3f),
+          0x80 | (cp & 0x3f)
+        );
+      }
+    }
+    return out;
+  }
+
+  function sha256Hex(str){
+    var bytes = toUtf8Bytes(str);
+    var bitLen = bytes.length * 8;
+
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0x00);
+    bytes.push(0,0,0,0);
+    bytes.push(
+      (bitLen >>> 24) & 0xff,
+      (bitLen >>> 16) & 0xff,
+      (bitLen >>> 8) & 0xff,
+      bitLen & 0xff
+    );
+
+    var h = H0.slice();
+    var w = new Array(64);
+    function rr(v, a){ return ((v >>> a) | (v << (32 - a))) >>> 0; }
+
+    for (var i = 0; i < bytes.length; i += 64){
+      for (var t = 0; t < 16; t++){
+        w[t] = ((bytes[i + t*4] << 24) |
+                (bytes[i + t*4 + 1] << 16) |
+                (bytes[i + t*4 + 2] << 8) |
+                 bytes[i + t*4 + 3]) >>> 0;
+      }
+      for (var t2 = 16; t2 < 64; t2++){
+        var x = w[t2 - 15], y = w[t2 - 2];
+        var s0 = (rr(x,7) ^ rr(x,18) ^ (x >>> 3)) >>> 0;
+        var s1 = (rr(y,17) ^ rr(y,19) ^ (y >>> 10)) >>> 0;
+        w[t2] = (w[t2-16] + s0 + w[t2-7] + s1) >>> 0;
+      }
+
+      var a = h[0], b = h[1], c = h[2], d = h[3],
+          e = h[4], f = h[5], g = h[6], hh = h[7];
+
+      for (var t3 = 0; t3 < 64; t3++){
+        var S1 = (rr(e,6) ^ rr(e,11) ^ rr(e,25)) >>> 0;
+        var ch = ((e & f) ^ (~e & g)) >>> 0;
+        var temp1 = (hh + S1 + ch + K[t3] + w[t3]) >>> 0;
+        var S0 = (rr(a,2) ^ rr(a,13) ^ rr(a,22)) >>> 0;
+        var maj = ((a & b) ^ (a & c) ^ (b & c)) >>> 0;
+        var temp2 = (S0 + maj) >>> 0;
+
+        hh = g; g = f; f = e;
+        e = (d + temp1) >>> 0;
+        d = c; c = b; b = a;
+        a = (temp1 + temp2) >>> 0;
+      }
+
+      h[0] = (h[0] + a)  >>> 0;  h[1] = (h[1] + b)  >>> 0;
+      h[2] = (h[2] + c)  >>> 0;  h[3] = (h[3] + d)  >>> 0;
+      h[4] = (h[4] + e)  >>> 0;  h[5] = (h[5] + f)  >>> 0;
+      h[6] = (h[6] + g)  >>> 0;  h[7] = (h[7] + hh) >>> 0;
+    }
+
+    var hex = '';
+    for (var n = 0; n < 8; n++){
+      hex += ('00000000' + h[n].toString(16)).slice(-8);
+    }
+    return hex;
+  }
+
+  /* =========================================================
+     2. 硬编码凭据
+     ========================================================= */
+  var STORED_USERNAME = 'Shuo';
+  var STORED_HASH = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92';
+
+  function safeEqual(a, b){
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    if (a.length !== b.length) return false;
+    var diff = 0;
+    for (var i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diff === 0;
+  }
+
+  /* =========================================================
+     3. AES-256-GCM 解密
+     ========================================================= */
+  var INFO_FILE = 'Information.txt';
+  var PBKDF2_ROUNDS = 200000;
+
+  var cryptoReady = !!(window.crypto && window.crypto.subtle &&
+                       window.TextEncoder && window.TextDecoder && window.atob);
+
+  function b64ToBytes(b64){
+    var bin = atob(b64);
+    var len = bin.length;
+    var out = new Uint8Array(len);
+    for (var i = 0; i < len; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  async function deriveAesKey(password, salt){
+    var enc = new TextEncoder();
+    var baseKey = await crypto.subtle.importKey(
+      'raw', enc.encode(password), { name:'PBKDF2' }, false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name:'PBKDF2', salt: salt, iterations: PBKDF2_ROUNDS, hash:'SHA-256' },
+      baseKey,
+      { name:'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+  }
+
+  async function decryptInfo(password){
+    if (!cryptoReady) throw new Error('crypto-unavailable');
+
+    var res = await fetch(INFO_FILE, { cache: 'no-store' });
+    if (!res.ok) throw new Error('fetch-failed');
+
+    var raw = (await res.text()).replace(/\s+/g, '');
+    if (!raw) throw new Error('empty-payload');
+
+    var bytes = b64ToBytes(raw);
+    if (bytes.length < 16 + 12 + 16) throw new Error('bad-format');
+
+    var salt = bytes.slice(0, 16);
+    var iv   = bytes.slice(16, 28);
+    var ct   = bytes.slice(28);
+
+    var key = await deriveAesKey(password, salt);
+    var plainBuf = await crypto.subtle.decrypt({ name:'AES-GCM', iv: iv }, key, ct);
+    return new TextDecoder('utf-8').decode(plainBuf);
+  }
+
+  /* =========================================================
+     4. DOM
+     ========================================================= */
+  var screenHome  = document.getElementById('screen-home');
+  var screenLogin = document.getElementById('screen-login');
+  var loginBtn    = document.getElementById('login-btn');
+
+  var tilt      = document.getElementById('tilt');
+  var glassUser = document.getElementById('glass-user');
+  var glass     = document.getElementById('glass');
+  var userInput = document.getElementById('username');
+  var input     = document.getElementById('pw');
+  var btn       = document.getElementById('btn');
+  var msg       = document.getElementById('msg');
+  var check     = document.getElementById('check');
+  var content   = document.getElementById('content');
+  var doc       = document.getElementById('doc');
+  var glow      = document.getElementById('cursor-glow');
+  var loginTitle = document.getElementById('login-title');
+
+  var busy = false;
+  var msgTimer = null;
+
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  /* ---------- 光标辉光 ---------- */
+  var gx = -1200, gy = -1200, cx = -1200, cy = -1200;
+
+  window.addEventListener('mousemove', function(e){
+    gx = e.clientX; gy = e.clientY;
+    glow.style.opacity = '1';
+  }, { passive:true });
+
+  window.addEventListener('mouseleave', function(){ glow.style.opacity = '0'; });
+  window.addEventListener('blur', function(){ glow.style.opacity = '0'; });
+
+  (function animateGlow(){
+    cx += (gx - cx) * 0.14;
+    cy += (gy - cy) * 0.14;
+    glow.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+    requestAnimationFrame(animateGlow);
+  })();
+
+  /* ---------- 3D 倾斜 ---------- */
+  var reduceMotion = window.matchMedia &&
+                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion && window.matchMedia('(hover: hover)').matches){
+    window.addEventListener('mousemove', function(e){
+      if (!screenLogin.classList.contains('active')) return;
+      var nx = (e.clientX / window.innerWidth) - 0.5;
+      var ny = (e.clientY / window.innerHeight) - 0.5;
+      tilt.style.transform =
+        'rotateY(' + (nx * 5).toFixed(2) + 'deg) ' +
+        'rotateX(' + (-ny * 5).toFixed(2) + 'deg)';
+    }, { passive:true });
+
+    window.addEventListener('mouseleave', function(){
+      tilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+  }
+
+  /* =========================================================
+     5. 主界面：标题解码 + 打字机
+     ========================================================= */
+  var glyphs = '!<~>-_/+*^?#$@%&';
+
+  function glitchDecode(el, text, duration){
+    duration = duration || 2100;
+    var frameDelay = 57;
+    var totalFrames = Math.round(duration / frameDelay);
+    var revealFrame = totalFrames / text.length;
+    var frame = 0;
+
+    var interval = setInterval(function(){
+      var output = '';
+      var revealedCount = Math.floor(frame / revealFrame);
+      for (var i = 0; i < text.length; i++){
+        if (text[i] === ' '){ output += ' '; continue; }
+        if (i < revealedCount){ output += text[i]; }
+        else { output += glyphs[Math.floor(Math.random() * glyphs.length)]; }
+      }
+      el.textContent = output;
+      frame++;
+      if (revealedCount >= text.length){
+        clearInterval(interval);
+        el.textContent = text;
+      }
+    }, frameDelay);
+  }
+
+  var nameEl = document.getElementById('glitch-name');
+
+  var titles = ['Encrypted', 'Private', 'Secure', 'Protected', 'Confidential', 'Isolated'];
+  var titleEl = document.getElementById('typing-title');
+  var tIndex = 0, cIndex = 0, deleting = false;
+  var typeTimer = null;
+
+  function typeLoop(){
+    var current = titles[tIndex];
+    if (!deleting){
+      cIndex++;
+      titleEl.textContent = current.slice(0, cIndex);
+      if (cIndex === current.length){
+        deleting = true;
+        typeTimer = setTimeout(typeLoop, 1500);
+        return;
+      }
+    } else {
+      cIndex--;
+      titleEl.textContent = current.slice(0, cIndex);
+      if (cIndex === 0){
+        deleting = false;
+        tIndex = (tIndex + 1) % titles.length;
+      }
+    }
+    typeTimer = setTimeout(typeLoop, deleting ? 42 : 84);
+  }
+
+  /* =========================================================
+     6. 登录标题控制
+     ========================================================= */
+  function showLoginTitle(){
+    loginTitle.style.transition = 'none';
+    loginTitle.style.opacity = '0';
+    loginTitle.style.filter = 'blur(10px)';
+    loginTitle.style.transform = 'scale(1.55) translateY(-22px)';
+
+    void loginTitle.offsetWidth;
+
+    loginTitle.style.transition =
+      'opacity .9s cubic-bezier(.19,1,.22,1) .12s, ' +
+      'filter .9s cubic-bezier(.19,1,.22,1) .12s, ' +
+      'transform 1.05s cubic-bezier(.19,1,.22,1) .12s';
+    loginTitle.style.opacity = '1';
+    loginTitle.style.filter = 'blur(0)';
+    loginTitle.style.transform = 'scale(1) translateY(0)';
+  }
+
+  function hideLoginTitle(){
+    loginTitle.style.transition =
+      'opacity .55s cubic-bezier(.19,1,.22,1), ' +
+      'filter .55s cubic-bezier(.19,1,.22,1), ' +
+      'transform .65s cubic-bezier(.19,1,.22,1)';
+    loginTitle.style.opacity = '0';
+    loginTitle.style.filter = 'blur(12px)';
+    loginTitle.style.transform = 'translateY(-16px) scale(.96)';
+  }
+
+  /* =========================================================
+     7. 界面切换：主界面 -> 登录界面
+     ========================================================= */
+  var switching = false;
+
+  function goToLogin(){
+    if (switching) return;
+    if (screenLogin.classList.contains('active')) return;
+    switching = true;
+
+    screenHome.classList.add('zooming');
+
+    setTimeout(function(){
+      screenHome.classList.remove('active', 'zooming');
+      screenLogin.classList.add('active');
+      document.body.classList.add('login-mode');
+
+      showLoginTitle();
+
+      setTimeout(function(){ userInput.focus(); }, 950);
+      setTimeout(function(){ switching = false; }, 1200);
+    }, 700);
+  }
+
+  loginBtn.addEventListener('click', goToLogin);
+
+  /* =========================================================
+     8. 交互 / 反馈
+     ========================================================= */
+  function showMessage(text){
+    msg.textContent = text;
+    msg.classList.add('show');
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  }
+  function hideMessage(){
+    clearTimeout(msgTimer);
+    msg.classList.remove('show');
+  }
+  function shake(el){
+    el.classList.remove('error');
+    void el.offsetWidth;
+    el.classList.add('error');
+    setTimeout(function(){ el.classList.remove('error'); }, 560);
+  }
+
+  function deny(){
+    shake(glassUser);
+    shake(glass);
+    showMessage('Incorrect username or password');
+    input.value = '';
+    input.focus();
+  }
+
+  /* =========================================================
+     9. 渲染解密内容
+     ========================================================= */
+  function renderInfo(text){
+    doc.innerHTML = '';
+    var lines = text.replace(/\r\n?/g, '\n').split('\n');
+    for (var i = 0; i < lines.length; i++){
+      var p = document.createElement('p');
+      p.className = 'line';
+      p.style.setProperty('--d', Math.min(i * 0.04, 0.5).toFixed(3) + 's');
+      p.textContent = lines[i];
+      doc.appendChild(p);
+    }
+  }
+
+  function renderFallback(){
+    doc.innerHTML = '';
+    var p = document.createElement('p');
+    p.className = 'line fallback';
+    p.style.setProperty('--d', '0s');
+    p.textContent = 'Content unavailable';
+    doc.appendChild(p);
+  }
+
+  /* =========================================================
+     10. 成功时间线
+     ========================================================= */
+  function grant(password){
+    hideMessage();
+    glassUser.classList.add('granted');
+    glass.classList.add('granted');
+
+    var loadPromise = decryptInfo(password).catch(function(){ return null; });
+
+    setTimeout(function(){ check.classList.add('show'); }, 200);
+    setTimeout(function(){ check.classList.add('out'); }, 1100);
+
+    setTimeout(function(){
+      hideLoginTitle();
+      screenLogin.classList.add('dissolving');
+    }, 1300);
+
+    setTimeout(function(){
+      loadPromise.then(function(text){
+        if (typeof text === 'string' && text.trim().length){
+          renderInfo(text);
+        } else {
+          renderFallback();
+        }
+        document.body.classList.add('content-mode');
+        content.setAttribute('aria-hidden', 'false');
+        content.classList.add('show');
+        window.dispatchEvent(new CustomEvent('auth:success'));
+      });
+    }, 1450);
+  }
+
+  /* =========================================================
+     11. 提交
+     ========================================================= */
+  tilt.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (busy) return;
+
+    var userVal = userInput.value;
+    var passVal = input.value;
+
+    if (!userVal || !passVal){
+      if (!userVal) shake(glassUser);
+      if (!passVal) shake(glass);
+      if (!userVal) userInput.focus(); else input.focus();
+      return;
+    }
+
+    busy = true;
+    btn.classList.add('loading');
+    hideMessage();
+
+    var started = Date.now();
+    var okUser = safeEqual(userVal, STORED_USERNAME);
+    var okPass = safeEqual(sha256Hex(passVal), STORED_HASH);
+
+    var elapsed = Date.now() - started;
+    if (elapsed < 420) await wait(420 - elapsed);
+
+    btn.classList.remove('loading');
+    busy = false;
+
+    if (okUser && okPass){
+      grant(passVal);
+    } else {
+      deny();
+    }
+  });
+
+  [userInput, input].forEach(function(el){
+    el.addEventListener('input', function(){
+      if (glassUser.classList.contains('error')) glassUser.classList.remove('error');
+      if (glass.classList.contains('error')) glass.classList.remove('error');
+      hideMessage();
+    });
+  });
+
+  /* =========================================================
+     12. 启动
+     ========================================================= */
+  window.addEventListener('load', function(){
+    glitchDecode(nameEl, 'Personal Database', 2100);
+    setTimeout(typeLoop, 2600);
+  });
+
+})();
+</script>
+
 </body>
 </html>
